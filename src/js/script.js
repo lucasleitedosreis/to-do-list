@@ -4,7 +4,9 @@ const taskContainer = document.querySelector(".task__container");
 const input = document.querySelector(".input__add--task");
 
 //verifica se o input está vazio
-const validateInput = () => input.value.trim().length > 0;
+const validateInput = () => {
+  return input.value.trim().length > 0;
+};
 
 const handleAddTask = () => {
   // validação input / caso  tenha erro adiciona a classe error

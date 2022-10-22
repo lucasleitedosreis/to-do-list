@@ -145,6 +145,7 @@ body {
   height: auto;
   display: flex;
   align-items: center;
+  gap: 5px;
 }
 .task__content:first-child {
   margin-top: 20px;
@@ -160,7 +161,6 @@ body {
   justify-content: space-between;
   padding: 5px 8px;
   border-radius: 5px;
-  /* margin-top: 20px; */
 }
 
 .icons__container {
