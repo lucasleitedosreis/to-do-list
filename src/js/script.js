@@ -1,75 +1,104 @@
 "use strict";
-const taskAddContainer = document.querySelector(".task__add--container");
+const inputContainer = document.querySelector(".input__container");
+const input = document.querySelector(".input__add--task");
 const btnAdd = document.querySelector(".btn__add--task");
 const taskContainer = document.querySelector(".task__container");
-const input = document.querySelector(".input__add--task");
+
+// ?? Operador de coalescência nulo
+const getData = () => JSON.parse(localStorage.getItem("tasks")) ?? [];
+const dataBaseStorage = getData();
+const setData = (dataBaseStorage) => localStorage.setItem("tasks", JSON.stringify(dataBaseStorage));
 
 // validação input / caso não tenha erro remove a classe error
 const handleChangeInput = () => {
   const inputIsValid = validateInput();
   if (inputIsValid) {
     input.classList.remove("error__input");
-    taskAddContainer.classList.remove("error");
+    inputContainer.classList.remove("error");
   }
 };
-//verifica se o input está vazio
+
+//está função é chamada através do handleChange e do addTask, ela verifica se o input está vazio
 const validateInput = () => {
   return input.value.trim().length > 0;
 };
 
 input.addEventListener("change", () => handleChangeInput());
 
-const AddTask = (taskValue) => {
-  // validação input / caso  tenha erro adiciona a classe error
+//função para adicionar a tarefa ao dataBaseStorage
+const addTask = () => {
   const inputIsValid = validateInput();
+  //verifica se o input está vazio
   if (!inputIsValid) {
     input.classList.add("error__input");
-    taskAddContainer.classList.add("error");
+    inputContainer.classList.add("error");
   } else {
-    // Cria a estrutura html e adiciona a tarefa
-    const taskContent = document.createElement("div");
-    taskContent.classList.add("task__content");
-    taskContainer.appendChild(taskContent);
-
-    const task = document.createElement("p");
-    task.classList.add("task");
-    task.innerText = taskValue;
-    taskContent.appendChild(task);
-
-    const iconsContainer = document.createElement("span");
-    iconsContainer.classList.add("icons__container");
-    taskContent.appendChild(iconsContainer);
-
-    const iconCheck = document.createElement("span");
-    iconCheck.innerHTML = '<span class="material-symbols-outlined check">check</span>';
-    iconsContainer.appendChild(iconCheck);
-
-    const iconEdit = document.createElement("span");
-    iconEdit.innerHTML = ' <span class="material-symbols-outlined edit">edit</span>';
-    iconsContainer.appendChild(iconEdit);
-
-    const iconDelete = document.createElement("span");
-    iconDelete.innerHTML = '<span class="material-symbols-outlined delete">delete</span>';
-    iconsContainer.appendChild(iconDelete);
-
+    //insere os dados no dataBaseStorage
+    dataBaseStorage.push({ tarefa: input.value, status: "" });
+    setData(dataBaseStorage);
+    refreshScreen();
     input.value = "";
     input.focus();
   }
 };
-btnAdd.addEventListener("click", () => handleAddTask());
+btnAdd.addEventListener("click", addTask);
 
-document.addEventListener("click", (e) => {
-  const targetElement = e.target;
-  const parentElement = targetElement.closest("section div");
-  //verifica se existe a classe selecionada, e se existir remove a task selecionada
-  if (targetElement.classList.contains("delete")) {
-    if (confirm("Deseja apagar essa tarefa?")) {
-      parentElement.remove();
-    }
+//remove o item  do database através do index
+const clearItem = (index) => {
+  dataBaseStorage.splice(index, 1);
+  setData(dataBaseStorage);
+  refreshScreen();
+};
+
+//Define se a task está ou não checked
+const updateItem = (index) => {
+  dataBaseStorage[index].status = dataBaseStorage[index].status === "" ? "checked" : "";
+  setData(dataBaseStorage);
+  refreshScreen();
+};
+
+//localiza o item a ser removido e chama a função para remover o item
+const handleClickItem = (event) => {
+  const element = event.target;
+  if (element.classList.contains("delete")) {
+    const index = element.dataset.index;
+    clearItem(index);
+  } else if (element.classList.contains("check")) {
+    const index = element.dataset.index;
+    updateItem(index);
   }
-  //verifica se existe a classe selecionada, e se existir marca a task como concluída
-  else if (targetElement.classList.contains("check")) {
-    const children = parentElement.children[0];
-    children.classList.toggle("checked");
+};
+taskContainer.addEventListener("click", handleClickItem);
+
+// Cria a estrutura html e adiciona as tarefas
+const createTask = (text, status, index) => {
+  const taskContent = document.createElement("div");
+  taskContent.classList.add("task__content");
+  taskContent.innerHTML = `
+                            <p class="task ${status}">${text}</p>
+                              <span class="icons__container">
+                              <span class="material-symbols-outlined check" data-index=${index}>check</span>
+                              <span class="material-symbols-outlined delete" data-index=${index}>delete</span>
+                            </span>
+                          `;
+  // <span class="material-symbols-outlined edit" data-index=${index}>edit</span>
+
+  taskContainer.appendChild(taskContent);
+};
+
+//limpa a tela para que não ocorra duplicação de tarefas
+const clearScreen = () => {
+  while (taskContainer.firstChild) {
+    taskContainer.removeChild(taskContainer.lastChild);
   }
-});
+};
+
+//atualiza os elementos da tela
+const refreshScreen = () => {
+  clearScreen();
+  dataBaseStorage.forEach((task, index) => {
+    createTask(task.tarefa, task.status, index);
+  });
+};
+
+refreshScreen();
