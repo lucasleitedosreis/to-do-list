@@ -45,7 +45,9 @@ btnAdd.addEventListener("click", addTask);
 
 //remove o item  do database através do index
 const clearItem = (index) => {
-  dataBaseStorage.splice(index, 1);
+  if (confirm("Deseja apagar a tarefa?")) {
+    dataBaseStorage.splice(index, 1);
+  }
   setData(dataBaseStorage);
   refreshScreen();
 };
