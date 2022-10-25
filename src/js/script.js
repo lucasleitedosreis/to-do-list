@@ -1,14 +1,25 @@
+"use strict";
 const taskAddContainer = document.querySelector(".task__add--container");
 const btnAdd = document.querySelector(".btn__add--task");
 const taskContainer = document.querySelector(".task__container");
 const input = document.querySelector(".input__add--task");
 
+// validação input / caso não tenha erro remove a classe error
+const handleChangeInput = () => {
+  const inputIsValid = validateInput();
+  if (inputIsValid) {
+    input.classList.remove("error__input");
+    taskAddContainer.classList.remove("error");
+  }
+};
 //verifica se o input está vazio
 const validateInput = () => {
   return input.value.trim().length > 0;
 };
 
-const handleAddTask = () => {
+input.addEventListener("change", () => handleChangeInput());
+
+const AddTask = (taskValue) => {
   // validação input / caso  tenha erro adiciona a classe error
   const inputIsValid = validateInput();
   if (!inputIsValid) {
@@ -22,7 +33,7 @@ const handleAddTask = () => {
 
     const task = document.createElement("p");
     task.classList.add("task");
-    task.innerText = input.value;
+    task.innerText = taskValue;
     taskContent.appendChild(task);
 
     const iconsContainer = document.createElement("span");
@@ -45,30 +56,19 @@ const handleAddTask = () => {
     input.focus();
   }
 };
-
-// validação input / caso não tenha erro remove a classe error
-const handleChangeInput = () => {
-  const inputIsValid = validateInput();
-  if (inputIsValid) {
-    input.classList.remove("error__input");
-    taskAddContainer.classList.remove("error");
-  }
-};
-
 btnAdd.addEventListener("click", () => handleAddTask());
-input.addEventListener("change", () => handleChangeInput());
 
-//remove a task selecionada
 document.addEventListener("click", (e) => {
   const targetElement = e.target;
   const parentElement = targetElement.closest("section div");
-
+  //verifica se existe a classe selecionada, e se existir remove a task selecionada
   if (targetElement.classList.contains("delete")) {
     if (confirm("Deseja apagar essa tarefa?")) {
       parentElement.remove();
     }
   }
-  if (targetElement.classList.contains("check")) {
+  //verifica se existe a classe selecionada, e se existir marca a task como concluída
+  else if (targetElement.classList.contains("check")) {
     const children = parentElement.children[0];
     children.classList.toggle("checked");
   }

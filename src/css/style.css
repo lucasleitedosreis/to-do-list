@@ -5,7 +5,7 @@
 :root {
   --color-primary: #002e34;
   --color-secondary: #004443;
-  --color-text-secondary: #78bd91;
+  --color-tertiary: #78bd91;
   --color-text-primary: #eeeeee;
 }
 /* -------------------------------reset-------------------------------  */
@@ -61,19 +61,20 @@ body {
 }
 .cabecalho p {
   font-size: 1.2rem;
-  color: var(--color-text-secondary);
+  color: var(--color-tertiary);
 }
 /* -------------------------------input tasks-------------------------------  */
-.task__add--container {
+.input__container {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 30px;
 }
-.error.task__add--container {
+.error.input__container {
   animation: shake-horizontal 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
 }
+
 @keyframes shake-horizontal {
   0%,
   100% {
@@ -110,7 +111,7 @@ body {
 }
 .input__add--task:focus,
 .btn__add--task:focus {
-  border: 3px solid #78bd91;
+  border: 3px solid var(--color-tertiary);
 }
 .btn__add--task {
   width: 50px;
@@ -124,7 +125,7 @@ body {
   transition: 0.2s;
 }
 .btn__add--task:hover {
-  background: #004443;
+  background: var(--color-secondary);
 }
 
 /* -------------------------------tasks-------------------------------  */
@@ -173,10 +174,14 @@ body {
   align-items: center;
   width: 50px;
   height: 50px;
-  background: var(--color-secondary);
+  background: var(--color-primary);
   color: var(--color-text-primary);
   border-radius: 5px;
+  transition: 0.3s;
   cursor: pointer;
+}
+.icons__container span:hover {
+  background-color: var(--color-secondary);
 }
 .icons__container .delete {
   color: #ff3333;
@@ -190,5 +195,5 @@ body {
 }
 .checked {
   text-decoration: line-through;
-  color: red;
+  color: #ff3333;
 }
