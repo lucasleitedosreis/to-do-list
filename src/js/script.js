@@ -26,9 +26,10 @@ const validateInput = () => {
 input.addEventListener("change", () => handleChangeInput());
 
 //função para adicionar a tarefa ao dataBaseStorage
-const addTask = () => {
+const addTask = (event) => {
   const inputIsValid = validateInput();
   //verifica se o input está vazio
+  console.log(event);
   if (!inputIsValid) {
     input.classList.add("error__input");
     inputContainer.classList.add("error");
@@ -42,6 +43,24 @@ const addTask = () => {
   }
 };
 btnAdd.addEventListener("click", addTask);
+document.body.addEventListener("keypress", (event) => {
+  if (event.key == "Enter") {
+    addTask();
+  }
+});
+
+//localiza o item a ser removido e chama a função para remover o item
+const handleClickItem = (event) => {
+  const element = event.target;
+  if (element.classList.contains("delete")) {
+    const index = element.dataset.index;
+    clearItem(index);
+  } else if (element.classList.contains("check")) {
+    const index = element.dataset.index;
+    updateItem(index);
+  }
+};
+taskContainer.addEventListener("click", handleClickItem);
 
 //remove o item  do database através do index
 const clearItem = (index) => {
@@ -58,19 +77,6 @@ const updateItem = (index) => {
   setData(dataBaseStorage);
   refreshScreen();
 };
-
-//localiza o item a ser removido e chama a função para remover o item
-const handleClickItem = (event) => {
-  const element = event.target;
-  if (element.classList.contains("delete")) {
-    const index = element.dataset.index;
-    clearItem(index);
-  } else if (element.classList.contains("check")) {
-    const index = element.dataset.index;
-    updateItem(index);
-  }
-};
-taskContainer.addEventListener("click", handleClickItem);
 
 // Cria a estrutura html e adiciona as tarefas
 const createTask = (text, status, index) => {

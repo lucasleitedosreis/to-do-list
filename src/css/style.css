@@ -27,7 +27,7 @@ body {
   padding: 20px;
 }
 
-/* -------------------------------container geral-------------------------------  */
+/* -------------------------------container general-------------------------------  */
 .container {
   max-width: 700px;
   min-width: 320px;
@@ -149,6 +149,7 @@ body {
   align-items: center;
   gap: 5px;
 }
+
 .task {
   width: 100%;
   height: 50px;
